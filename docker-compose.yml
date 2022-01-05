@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+   db:
+     ports:
+       - "3307:3307"
+     image: mysql
+     env_file: .env.db
+     volumes:
+       - ./dbdumps:/dbdumps
+
+volumes:
+  dbdumps:
