@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.functions import TruncDay
 
 
 User = get_user_model()
@@ -39,6 +40,12 @@ class PostLikeBaseManager(models.Manager):
             return True
         return
 
+    def filter_by_period(self, fr, to, post_id):
+        queryset = self.filter(created_at__range=(fr, to), post_id=post_id).annotate(day=TruncDay('created_at')).values('day', 'post_id') \
+            .annotate(likes_amount=models.Count('created_at'))
+
+        return queryset
+
 
 class PostLikeManager(PostLikeBaseManager):
     pass
@@ -51,6 +58,7 @@ class PostDislikeManager(PostLikeBaseManager):
 class PostLike(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_likes')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = PostLikeManager()
 
@@ -63,6 +71,7 @@ class PostLike(models.Model):
 class PostDislike(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_dislikes')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_dislikes')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = PostDislikeManager()
 

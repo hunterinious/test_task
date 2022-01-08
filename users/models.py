@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -29,6 +30,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     username = None
     email = models.EmailField(max_length=60, unique=True)
     is_superuser = models.BooleanField(default=False)
+    last_request = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ()

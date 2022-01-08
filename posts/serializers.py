@@ -14,9 +14,14 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 
 class PostCreateLikeSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+
     class Meta:
         model = PostLike
-        fields = ('post', )
+        fields = ('id', 'post',)
+
+    def get_id(self, obj):
+        return obj.id
 
     def validate(self, data):
         request_user = self.context['request'].user
@@ -41,10 +46,27 @@ class PostCreateLikeSerializer(serializers.ModelSerializer):
         return super(PostCreateLikeSerializer, self).create(validated_data)
 
 
+class PostLikeAnaliticsParamsSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField()
+    date_from = serializers.DateTimeField()
+    date_to = serializers.DateTimeField()
+
+
+class PostLikeAnaliticsSerilizer(serializers.Serializer):
+    post_id = serializers.IntegerField()
+    day = serializers.DateTimeField()
+    likes_amount = serializers.IntegerField()
+
+
 class PostCreateDislikeSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+
     class Meta:
         model = PostDislike
-        fields = ('post', )
+        fields = ('id', 'post',)
+
+    def get_id(self, obj):
+        return obj.id
 
     def validate(self, data):
         request_user = self.context['request'].user
