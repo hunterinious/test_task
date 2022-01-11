@@ -1,22 +1,8 @@
 from rest_framework import serializers
 from validators.serializers.common import validate_password
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
-
-class UserLoginSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-        data['refresh'] = str(refresh)
-        data['access'] = str(refresh.access_token)
-        return data
-
-
-class UserRefreshTokenSerializer(TokenRefreshSerializer):
-    pass
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -41,3 +27,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+
+class UserActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('last_login', 'last_request')

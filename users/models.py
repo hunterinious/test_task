@@ -25,6 +25,13 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def set_last_request(self, user):
+        user.last_request = timezone.now()
+        user.save()
+
+    def get_all(self):
+        return self.all()
+
 
 class CustomUser(AbstractUser, PermissionsMixin):
     username = None

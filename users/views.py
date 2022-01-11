@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, response, status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from .serializers import (
     UserCreateSerializer,
-    UserLoginSerializer,
-    UserRefreshTokenSerializer,
+    UserActivitySerializer,
 )
 
 User = get_user_model()
@@ -37,8 +37,13 @@ class UserCreateView(CreateAPIView):
 
 class UserLoginView(TokenObtainPairView):
     permission_classes = []
-    serializer_class = UserLoginSerializer
+    serializer_class = TokenObtainPairSerializer
 
 
 class UserRefreshTokenView(TokenRefreshView):
-    serializer_class = UserRefreshTokenSerializer
+    serializer_class = TokenRefreshSerializer
+
+
+class UserAcitvityView(RetrieveAPIView):
+    queryset = User.objects.get_all()
+    serializer_class = UserActivitySerializer
